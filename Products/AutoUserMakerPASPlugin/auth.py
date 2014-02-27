@@ -49,6 +49,9 @@ httpSharingTokensKey = 'http_sharing_tokens'
 httpSharingLabelsKey = 'http_sharing_labels'
 usernameKey = 'user_id'
 
+defaultChallengeHeader = 'challenge_header_name'
+challengeHeaderEnabledKey = 'challenge_header_enabled'
+
 PWCHARS = string.letters + string.digits + string.punctuation
 
 _defaultChallengePattern = re.compile('http://(.*)')
@@ -239,6 +242,10 @@ class AutoUserMakerPASPlugin(BasePlugin):
 
     security.declarePrivate('challenge')
     def challenge(self, request, response):
+        config = self.getConfig()
+        if config[challengeHeaderEnabledKey]:
+            if request.get_header(config[defaultChallengeHeader]) is None:
+                return False
         url = self.loginUrl(request.ACTUAL_URL)
         if url:
             response.redirect(url, lock=True)
@@ -309,6 +316,8 @@ class ExtractionPlugin(BasePlugin, PropertyManager):
             (httpAuthzTokensKey, 'lines', 'w', []),
             (httpSharingTokensKey, 'lines', 'w', []),
             (httpSharingLabelsKey, 'lines', 'w', []),
+            (challengeHeaderEnabledKey, 'boolean', 'w', False),
+            (defaultChallengeHeader, 'string', 'w', 'HTTP_WSA_SHOULD_CHALLENGE'),
             ('required_roles', 'lines', 'wd', []),
             ('login_users', 'lines', 'wd', []))
         # Create any missing properties
@@ -365,7 +374,9 @@ class ExtractionPlugin(BasePlugin, PropertyManager):
             autoUpdateUserPropertiesKey: self.getProperty(autoUpdateUserPropertiesKey),
             httpAuthzTokensKey: self.getProperty(httpAuthzTokensKey),
             httpSharingTokensKey: self.getProperty(httpSharingTokensKey),
-            httpSharingLabelsKey: self.getProperty(httpSharingLabelsKey)}
+            httpSharingLabelsKey: self.getProperty(httpSharingLabelsKey),
+            defaultChallengeHeader: self.getProperty(defaultChallengeHeader),
+            challengeHeaderEnabledKey: self.getProperty(challengeHeaderEnabledKey)}
 
     security.declarePublic('getSharingConfig')
     def getSharingConfig(self):
@@ -719,7 +730,9 @@ class ApacheAuthPluginHandler(AutoUserMakerPASPlugin, ExtractionPlugin):
             autoUpdateUserPropertiesKey: autoupdate,
             httpAuthzTokensKey: reqget(httpAuthzTokensKey, ''),
             httpSharingTokensKey: reqget(httpSharingTokensKey, ''),
-            httpSharingLabelsKey: reqget(httpSharingLabelsKey, '')})
+            httpSharingLabelsKey: reqget(httpSharingLabelsKey, ''),
+            challengeHeaderEnabledKey: reqget(challengeHeaderEnabledKey),
+            defaultChallengeHeader: reqget(defaultChallengeHeader)})
         return REQUEST.RESPONSE.redirect('%s/manage_config' %
                                          self.absolute_url())
 

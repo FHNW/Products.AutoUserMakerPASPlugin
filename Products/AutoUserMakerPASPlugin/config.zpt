@@ -56,6 +56,12 @@
       </textarea>
     </p>
 
+    <p>
+      <input type="checkbox" id="challenge_header_enabled" name="challenge_header_enabled" value="1" tal:attributes="checked config/challenge_header_enabled" />
+      <label for="challenge_header_enabled">Only when the</label>
+      <input type="text" size="20" name="challenge_header_name" id="challenge_header_name" tal:attributes="value config/challenge_header_name" />
+      <label for="challenge_header_enabled">request header is present</label>
+    </p>
     <h3 i18n:translate="heading_user_setup_headers">User Setup Headers</h3>
     <p class="form-help" i18n:translate="help_header_mapping">
       HTTP Headers as made available by Apache/Shibboleth. See your Shibboleth's
