@@ -1,12 +1,13 @@
 from Products.AutoUserMakerPASPlugin.tests.base import PluginTestCase
-from Products.AutoUserMakerPASPlugin.Extensions.Install import \
-    addautousermakerplugin
+from Products.AutoUserMakerPASPlugin.zmi import manage_addAutoUserMaker
 
 
 class AutoUserMakerPASPluginTests(PluginTestCase):
 
     def afterSetUp(self):
-        self.plugin = addautousermakerplugin(self.portal.acl_users)
+        manage_addAutoUserMaker(self.portal.acl_users,
+                                'AutoUserMakerPASPlugin')
+        self.plugin = self.portal.acl_users['AutoUserMakerPASPlugin']
 
     def test_authentication(self):
         auth = self.plugin.authenticateCredentials

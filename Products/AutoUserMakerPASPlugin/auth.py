@@ -348,6 +348,8 @@ class ExtractionPlugin(BasePlugin, PropertyManager):
         >>> import pprint
         >>> pprint.pprint(handler.getConfig())
         {'auto_update_user_properties': 0,
+         'challenge_header_enabled': False,
+         'challenge_header_name': 'HTTP_WSA_SHOULD_CHALLENGE',
          'http_authz_tokens': (),
          'http_commonname': ('HTTP_SHIB_PERSON_COMMONNAME',),
          'http_country': ('HTTP_SHIB_ORGPERSON_C',),

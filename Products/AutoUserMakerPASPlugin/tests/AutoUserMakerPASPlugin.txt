@@ -157,6 +157,8 @@ Now, let's check the default configuration:
 
     >>> inOrder(apache.getConfig())
     'auto_update_user_properties':0
+    'challenge_header_enabled':False
+    'challenge_header_name':HTTP_WSA_SHOULD_CHALLENGE
     'http_authz_tokens':()
     'http_commonname':('HTTP_SHIB_PERSON_COMMONNAME',)
     'http_country':('HTTP_SHIB_ORGPERSON_C',)
@@ -176,6 +178,8 @@ pseudo REQUEST object, then get the results and print in order.
     >>> request = MockForm({"strip_domain_names": 0,
     ...                     "strip_domain_name_list": 'test.org',
     ...                     "http_remote_user": 'HTTP_TEST_USER',
+    ...                     "challenge_header_enabled":True,
+    ...                     "challenge_header_name": 'HTTP_WSA_SHOULD_CHALLENGE2',
     ...                     "http_commonname": 'HTTP_TEST_COMMONNAME',
     ...                     "http_description": 'HTTP_TEST_TITLE',
     ...                     "http_email": 'HTTP_TEST_EMAIL',
@@ -188,6 +192,8 @@ pseudo REQUEST object, then get the results and print in order.
     >>> apache.manage_changeConfig(request)
     >>> inOrder(apache.getConfig())
     'auto_update_user_properties':0
+    'challenge_header_enabled':True
+    'challenge_header_name':HTTP_WSA_SHOULD_CHALLENGE2
     'http_authz_tokens':('HTTP_TEST_USER',)
     'http_commonname':('HTTP_TEST_COMMONNAME',)
     'http_country':('HTTP_TEST_COUNTRY',)
@@ -207,6 +213,8 @@ the above output.
     >>> request = MockForm({'no_such_field': 'junk'})
     >>> inOrder(apache.getConfig())
     'auto_update_user_properties':0
+    'challenge_header_enabled':True
+    'challenge_header_name':HTTP_WSA_SHOULD_CHALLENGE2
     'http_authz_tokens':('HTTP_TEST_USER',)
     'http_commonname':('HTTP_TEST_COMMONNAME',)
     'http_country':('HTTP_TEST_COUNTRY',)
