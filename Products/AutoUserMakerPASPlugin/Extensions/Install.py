@@ -6,6 +6,7 @@ from Products.PluggableAuthService.interfaces.plugins import (
     IAuthenticationPlugin, IExtractionPlugin, IChallengePlugin)
 from Products.PluggableAuthService.PluggableAuthService import logger
 from Products.AutoUserMakerPASPlugin.auth import ApacheAuthPluginHandler
+from Products.AutoUserMakerPASPlugin.zmi import manage_addAutoUserMaker
 
 def _firstIdOfClass(container, class_):
     """ Return the id of the first object of class `class_` within `container`.
@@ -16,21 +17,15 @@ def _firstIdOfClass(container, class_):
             return id
 
 
-def addautousermakerplugin(acl_users, pluginId='AutoUserMakerPASPlugin'):
-    # http://wiki.zope.org/zope2/ObjectManager
-    constructors = acl_users.manage_addProduct[pluginId]
-    constructors.manage_addAutoUserMaker(pluginId,
-                                         title='AutoUserMakerPAS Plugin')
-    return acl_users[pluginId]
-
-
 def install(portal, reinstall=False):
     acl_users = getToolByName(portal, 'acl_users')
 
     # Put an apachepas multiplugin in the acl_users folder, if there isn't one:
     pluginId = _firstIdOfClass(acl_users, ApacheAuthPluginHandler)
     if not pluginId:
-        addautousermakerplugin(acl_users)
+        manage_addAutoUserMaker(acl_users,
+                                'AutoUserMakerPASPlugin',
+                                title='AutoUserMakerPAS Plugin')
 
     # Activate it:
     plugins = acl_users.plugins
